@@ -2,19 +2,6 @@
 def sudoku_print(p):
     for i in p:
         print(*i, sep=' ')
-def sc(ind):
-    if ind < 3:
-        return 0
-    if ind < 6:
-        return 3
-    return 6
-
-def lc(ind):
-    if ind < 3:
-        return 2
-    if ind < 6:
-        return 5
-    return 8
 
 def find_empty_cell(p):
     for i in range(9):
@@ -30,8 +17,8 @@ def safe(p, row, col, dig):
     for i in range(9):
         if i != col and dig == p[i][col]:
             return False
-    for i in range(sc(row), lc(row) +1):
-        for j in range(sc(col), lc(col) +1):
+    for i in range(row - (row % 3), row + 2 - (row % 3) + 1):
+        for j in range(col - (col % 3), col + 2 - (col % 3) + 1):
             if i != row and j != col and dig == p[i][j]:
                 return False
     return True
@@ -42,7 +29,6 @@ def sudoku_solve(p):
         return p
     for d in range(1, 10):
         if safe(p, next[0], next[1], d):
-            #print("next move is [", next[0], ", ", next[1], "] with value ", d, sep='')
             temp = p
             temp[next[0]][next[1]] = d
             tp = sudoku_solve(temp)
@@ -80,4 +66,3 @@ if __name__ == "__main__":
     sol = sudoku_solve(puzzle)
     s1 = sudoku_solve(t1)
     sudoku_print(sol)
-    print(safe(puzzle, 1, 0, 1))
