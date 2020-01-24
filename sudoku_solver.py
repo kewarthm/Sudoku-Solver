@@ -12,11 +12,20 @@ def find_empty_cell(p):
     return [-1, -1]
 
 def safe(p, row, col, dig):
+    '''
+        (list, int, int, int) -> bool
+
+        If value dig is a valid choice of integer for cell (row, col) in the
+        sudoku puzzle p then return True. Otherwise return False
+    '''
+
     if dig in p[row][:col] or dig in p[row][col+1:]:
         return False
+
     for i in range(9):
         if i != col and dig == p[i][col]:
             return False
+
     for i in range(row - (row % 3), row + 2 - (row % 3) + 1):
         for j in range(col - (col % 3), col + 2 - (col % 3) + 1):
             if i != row and j != col and dig == p[i][j]:
@@ -24,18 +33,24 @@ def safe(p, row, col, dig):
     return True
 
 def sudoku_solve(p):
+    '''
+        (list) -> list
+
+        Takes a sudoku puzzle p and returns a completed sudoku puzzle.
+        If no solution exists then it will return the original puzzle
+    '''
+
     next = find_empty_cell(p)
     if next == [-1, -1]:
         return p
     for d in range(1, 10):
         if safe(p, next[0], next[1], d):
-            temp = p
-            temp[next[0]][next[1]] = d
-            tp = sudoku_solve(temp)
-            if find_empty_cell(tp) == [-1, -1]:
-                return tp
+            p[next[0]][next[1]] = d
+            p = sudoku_solve(p)
+            if find_empty_cell(p) == [-1, -1]:
+                return p
             else:
-                temp[next[0]][next[1]] = 0
+                p[next[0]][next[1]] = 0
     return p
 
 
